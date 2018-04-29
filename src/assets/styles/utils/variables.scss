@@ -1,0 +1,42 @@
+// GLOBAL
+$transition: 250ms;
+$transition-slow: 350ms;
+$finger-size: 48px;
+$border-radius: 4px;
+
+// COLORS
+$default: #f7e832;
+$black: #000000;
+$grey: #C9C9C9;
+$white: #FEFEFE;
+
+// TYPOGRAPHY
+$flh-normal: 1.3;
+$fw-light: 200;
+$fw-normal: normal;
+$fw-medium: 500;
+$fw-bold: bold;
+
+/// BOOTSTRAP CUSTOMIZED VARIABLES
+$theme-colors: () !default;
+$theme-colors: map-merge((
+  "default":    $default
+), $theme-colors);
+
+$fonts-path: '/themes/michaelzaccardi/assets/public/fonts/';
+$images-path: '/static/images/';
+
+// Responsive
+$breakpoints: (
+  "mobile":  321px,
+  "phablet": 640px,
+  "tablet":  980px,
+  "desktop": 1200px,
+);
+// Z index
+$z-indexes: (
+  "loader"
+  "header-footer",
+  "page-content"
+);
+

@@ -1,0 +1,61 @@
+{
+  "root": true,
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "plugin:vue/essential",
+    "airbnb",
+    "prettier"
+  ],
+  "plugins": [
+    "prettier",
+    "vue"
+  ],
+  "globals": {
+    "dom": true
+  },
+  "rules": {
+    "semi": [2, "never"],
+    "strict": 0,
+    "no-floating-decimal": 0,
+    "react/jsx-boolean-value": 0,
+    "import/no-unresolved": 0,
+    "react/sort-comp": 0,
+    "react/prop-types": 0,
+    "arrow-body-style": 0,
+    "no-return-assign": 0,
+    "radix": ["error", "as-needed"],
+    "react/jsx-filename-extension": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/prefer-default-export": 0,
+    "import/extensions": ["error", "never"],
+    "no-unused-expressions": 0,
+    "react/no-unescaped-entities": 0,
+    "arrow-parents": 0,
+    "object-shorthand": [0, "always", { "ignoreConstructors": true }],
+    "func-names": ["error", "never"],
+    "no-underscore-dangle": 0,
+    "global-require": 0,
+    "prefer-destructuring": 0,
+    "no-param-reassign": ["error", {
+      "props": true,
+      "ignorePropertyModificationsFor": [
+        "state",
+        "acc",
+        "e"
+      ]
+    }],
+    "prettier/prettier": ["error",{
+      "semi": false,
+      "printWidth": 120,
+      "singleQuote": true,
+      "bracketSpacing": true,
+      "trailingComma": "all",
+      "arrowParens": "always"
+    }]
+  }
+}
