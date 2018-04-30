@@ -16,18 +16,21 @@ import {
   EMPTY_GIFS_ARRAY,
   OFFSET_TO_ZERO,
   REMOVE_ERROR,
+  SEARCH_RETURN_NULL,
+  REMOVE_SEARCH_RETURN_TO_NULL,
 } from './Types'
 
 Vue.use(Vuex, VueAxios, axios)
 
 const state = {
   gifs: [],
-  gifs_limit: 25,
+  gifs_limit: 24,
   gifs_offset: 0,
   gifs_loading: false,
   gifs_loaded: false,
   gifs_loading_failed: false,
   search: false,
+  search_return_null: false,
 }
 
 const getters = {}
@@ -71,6 +74,13 @@ const mutations = {
     state.gifs_loading_failed = true
   },
 
+  [SEARCH_RETURN_NULL]: (state) => {
+    state.gifs_loading = false
+    state.gifs_loaded = false
+    state.gifs_loading_failed = true
+    state.search_return_null = true
+  },
+
   [TOGGLE_SEARCH_STATE]: (state) => {
     state.search ? state.search = false : state.search = true
   },
@@ -85,6 +95,10 @@ const mutations = {
 
   [REMOVE_ERROR]: (state) => {
     state.gifs_loading_failed = false
+  },
+
+  [REMOVE_SEARCH_RETURN_TO_NULL]: (state) => {
+    state.search_return_null = false
   }
   /* eslint-enable */
 }
@@ -100,7 +114,11 @@ const actions = {
           },
         })
         .then((payload) => {
-          context.commit('GET_GIFS', payload)
+          if (payload.data.data.length <= 0) {
+            context.commit('SEARCH_RETURN_NULL')
+          } else {
+            context.commit('GET_GIFS', payload)
+          }
           resolve()
         })
         .catch(() => {
@@ -119,7 +137,11 @@ const actions = {
           },
         })
         .then((payload) => {
-          context.commit('ADD_GIFS', payload)
+          if (payload.data.data.length <= 0) {
+            context.commit('SEARCH_RETURN_NULL')
+          } else {
+            context.commit('ADD_GIFS', payload)
+          }
           resolve()
         })
         .catch(() => {
@@ -162,6 +184,10 @@ const actions = {
 
   removeError: (context) => {
     context.commit('REMOVE_ERROR')
+  },
+
+  removeSearchReturnNullState: (context) => {
+    context.commit('REMOVE_SEARCH_RETURN_TO_NULL')
   },
 }
 

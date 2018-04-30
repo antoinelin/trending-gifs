@@ -69,6 +69,7 @@ export default {
     store.dispatch('emptyGifsArray')
     store.dispatch('setOffsetToZero')
     store.dispatch('removeError')
+    store.dispatch('removeSearchReturnNullState')
 
     document.removeEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
@@ -82,6 +83,7 @@ export default {
     store.dispatch('emptyGifsArray')
     store.dispatch('setOffsetToZero')
     store.dispatch('removeError')
+    store.dispatch('removeSearchReturnNullState')
 
     if (to.path.split('/')[2]) {
       store

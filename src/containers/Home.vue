@@ -65,6 +65,7 @@ export default {
     this.$store.dispatch('emptyGifsArray')
     this.$store.dispatch('setOffsetToZero')
     this.$store.dispatch('removeError')
+    this.$store.dispatch('removeSearchReturnNullState')
 
     document.removeEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
@@ -86,11 +87,7 @@ export default {
         })
         .then(() => {
           this.$store.dispatch('setGifsLoaded')
-
-          const timeout = setTimeout(() => {
-            this.busy = false
-            clearTimeout(timeout)
-          }, 3000)
+          this.busy = false
         })
     },
 

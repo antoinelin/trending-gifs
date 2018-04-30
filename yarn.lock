@@ -3093,6 +3093,10 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
+gsap@^1.20.4:
+  version "1.20.4"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-1.20.4.tgz#005fba2a7bfbb3b9d27bd77e1634d2bad365a86a"
+
 gzip-size@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-4.1.0.tgz#8ae096257eabe7d69c45be2b67c448124ffb517c"
@@ -6752,10 +6756,6 @@ vue-loader@^13.3.0:
     vue-hot-reload-api "^2.2.0"
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
-
-vue-masonry-css@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/vue-masonry-css/-/vue-masonry-css-1.0.1.tgz#0b3c5bff2ac36d580f57d0aecf16127d7bed4216"
 
 vue-router@^3.0.1:
   version "3.0.1"

@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .spinner {
   margin: 50px auto 100px;
   width: 70px;
