@@ -9,8 +9,7 @@ Discover the top trending GIFs !
 - [vue-cli](https://github.com/vuejs/vue-cli)
 - [Prettier](https://prettier.io/)
 
-Templating : [PUG](https://pugjs.org/api/getting-started.html)
-Styling : [SCSS](https://sass-lang.com/)
+Templating : [PUG](https://pugjs.org/api/getting-started.html), styling : [SCSS](https://sass-lang.com/)
 
 ## Build Setup
 
