@@ -1,6 +1,6 @@
 # Trending GIFs
 
-[![TrendingGIFs](http://antoinelin.com/assets/TrendingGifs.png)](https://github.com/toinelin/trending-gifs)
+[![TrendingGIFs](http://antoinelin.com/assets/TrendingGifs.svg)](https://github.com/toinelin/trending-gifs)
 
 Discover the top trending GIFs !
 
