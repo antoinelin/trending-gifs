@@ -15,12 +15,26 @@
 export default {
   name: 'Header',
   methods: {
+    /**
+     * Toggle search state
+     *
+     * @function
+     *
+     */
+
     toggleSearchState: function() {
       this.$store.dispatch('search')
     },
 
+    /**
+     * Remove search state
+     *
+     * @function
+     *
+     */
+
     removeSearchState: function() {
-      this.$store.dispatch('searchToFalse')
+      this.$store.dispatch('resetSearchState')
     },
   },
 }

@@ -1,9 +1,9 @@
 <template lang="pug">
   div.t-search
-    <GIFs v-if="$store.state.gifs_loaded && !$store.state.gifs_loading_failed && !$store.state.search"/>
+    <GIFs v-if="$store.state.loaded && !$store.state.loading_failed && !$store.state.search"/>
     <Search v-if="$store.state.search"/>
-    <Loading v-if="$store.state.gifs_loading && !$store.state.gifs_loading_failed && !$store.state.search"/>
-    <LoadingFailed v-if="$store.state.gifs_loading_failed && !$store.state.search"/>
+    <Loading v-if="$store.state.loading && !$store.state.loading_failed && !$store.state.search"/>
+    <LoadingFailed v-if="$store.state.loading_failed && !$store.state.search"/>
 </template>
 
 <script>
@@ -31,34 +31,37 @@ export default {
   },
 
   beforeMount: function() {
-    store.dispatch('setGifsLoading')
+    store.dispatch('loading')
   },
 
   mounted: function() {
+    // Remove search bar on esc
     document.addEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
-        this.$store.dispatch('searchToFalse')
+        this.$store.dispatch('resetSearchState')
       }
     })
 
     if (this.busy) return
     this.busy = true
 
+    // Check if search params
     if (window.location.pathname.split('/')[2]) {
+      // HTTP request GIFs on page mounted
       store
         .dispatch('getGifs', {
           endpoint: 'http://api.giphy.com/v1/gifs/search',
           params: {
             api_key: 'EWtgxX9ydYJ4qOS1nbO9SxaPJi38L8HM',
             q: window.location.pathname.split('/')[2],
-            limit: this.$store.state.gifs_limit,
-            offset: this.$store.state.gifs_offset,
+            limit: this.$store.state.limit,
+            offset: this.$store.state.offset,
           },
         })
         .then(() => {
           RAF.add(this.update)
           this.busy = false
-          store.dispatch('setGifsLoaded')
+          store.dispatch('loaded')
         })
     }
   },
@@ -66,24 +69,24 @@ export default {
   beforeDestroy: function() {
     RAF.remove(this.update)
 
-    store.dispatch('emptyGifsArray')
-    store.dispatch('setOffsetToZero')
-    store.dispatch('removeError')
-    store.dispatch('removeSearchReturnNullState')
+    store.dispatch('resetGifs')
+    store.dispatch('resetOffset')
+    store.dispatch('resetError')
+    store.dispatch('resetSearchReturnNullState')
 
     document.removeEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
-        store.dispatch('searchToFalse')
+        store.dispatch('resetSearchState')
       }
     })
   },
 
   beforeRouteUpdate: (to, from, next) => {
-    store.dispatch('searchToFalse')
-    store.dispatch('emptyGifsArray')
-    store.dispatch('setOffsetToZero')
-    store.dispatch('removeError')
-    store.dispatch('removeSearchReturnNullState')
+    store.dispatch('resetSearchState')
+    store.dispatch('resetGifs')
+    store.dispatch('resetOffset')
+    store.dispatch('resetError')
+    store.dispatch('resetSearchReturnNullState')
 
     if (to.path.split('/')[2]) {
       store
@@ -92,12 +95,12 @@ export default {
           params: {
             api_key: 'EWtgxX9ydYJ4qOS1nbO9SxaPJi38L8HM',
             q: to.path.split('/')[2],
-            limit: store.state.gifs_limit,
-            offset: store.state.gifs_offset,
+            limit: store.state.limit,
+            offset: store.state.offset,
           },
         })
         .then(() => {
-          store.dispatch('setGifsLoaded')
+          store.dispatch('loaded')
         })
     }
 
@@ -105,12 +108,21 @@ export default {
   },
 
   methods: {
+    /**
+     * Update
+     *
+     * Check if viewport = bottom of the page on RAF
+     *
+     * @function
+     *
+     */
+
     update: function() {
       if (!store.state.search) {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-          store.dispatch('setLoadingMoreGifs')
+          store.dispatch('loadingMore')
 
-          if (this.busy || !store.state.gifs_loaded) return
+          if (this.busy || !store.state.loaded) return
           this.busy = true
 
           this.loadMore()
@@ -118,10 +130,28 @@ export default {
       }
     },
 
+    /**
+     * Load more
+     *
+     * Load more gifs with infinite scroll
+     *
+     * @function
+     *
+     */
+
     loadMore: function() {
-      store.dispatch('setGifsOffset')
+      store.dispatch('setOffset')
       this.addGifs()
     },
+
+    /**
+     * addGifs
+     *
+     * HTTP request for add more GIFs to the container
+     *
+     * @function
+     *
+     */
 
     addGifs: function() {
       if (window.location.pathname.split('/')[2]) {
@@ -131,12 +161,12 @@ export default {
             params: {
               api_key: 'EWtgxX9ydYJ4qOS1nbO9SxaPJi38L8HM',
               q: window.location.pathname.split('/')[2],
-              limit: store.state.gifs_limit,
-              offset: store.state.gifs_offset,
+              limit: store.state.limit,
+              offset: store.state.offset,
             },
           })
           .then(() => {
-            store.dispatch('setGifsLoaded')
+            store.dispatch('loaded')
 
             const timeout = setTimeout(() => {
               this.busy = false

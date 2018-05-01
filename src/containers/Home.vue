@@ -1,9 +1,9 @@
 <template lang="pug">
   div.t-home
-    <GIFs v-if="$store.state.gifs_loaded && !$store.state.gifs_loading_failed && !$store.state.search"/>
+    <GIFs v-if="$store.state.loaded && !$store.state.loading_failed && !$store.state.search"/>
     <Search v-if="$store.state.search"/>
-    <Loading v-if="$store.state.gifs_loading && !$store.state.gifs_loading_failed && !$store.state.search"/>
-    <LoadingFailed v-if="$store.state.gifs_loading_failed && !$store.state.search"/>
+    <Loading v-if="$store.state.loading && !$store.state.loading_failed && !$store.state.search"/>
+    <LoadingFailed v-if="$store.state.loading_failed && !$store.state.search"/>
 </template>
 
 <script>
@@ -30,73 +30,93 @@ export default {
   },
 
   beforeMount: function() {
-    this.$store.dispatch('setGifsLoading')
+    this.$store.dispatch('loading')
   },
 
   mounted: function() {
+    // Remove search bar on esc
     document.addEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
-        this.$store.dispatch('searchToFalse')
+        this.$store.dispatch('resetSearchState')
       }
     })
 
     if (this.busy) return
     this.busy = true
 
+    // HTTP request GIFs on page mounted
     this.$store
       .dispatch('getGifs', {
         endpoint: 'http://api.giphy.com/v1/gifs/trending',
         params: {
           api_key: 'EWtgxX9ydYJ4qOS1nbO9SxaPJi38L8HM',
-          limit: this.$store.state.gifs_limit,
-          offset: this.$store.state.gifs_offset,
+          limit: this.$store.state.limit,
+          offset: this.$store.state.offset,
         },
       })
       .then(() => {
         RAF.add(this.update)
         this.busy = false
-        this.$store.dispatch('setGifsLoaded')
+        this.$store.dispatch('loaded')
       })
   },
 
   beforeDestroy: function() {
     RAF.remove(this.update)
 
-    this.$store.dispatch('emptyGifsArray')
-    this.$store.dispatch('setOffsetToZero')
-    this.$store.dispatch('removeError')
-    this.$store.dispatch('removeSearchReturnNullState')
+    this.$store.dispatch('resetGifs')
+    this.$store.dispatch('resetOffset')
+    this.$store.dispatch('resetError')
+    this.$store.dispatch('resetSearchReturnNullState')
 
     document.removeEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
-        this.$store.dispatch('searchToFalse')
+        this.$store.dispatch('resetSearchState')
       }
     })
   },
 
   methods: {
-    addTrendingGifs: function() {
+    /**
+     * addGifs
+     *
+     * HTTP request for add more GIFs to the container
+     *
+     * @function
+     *
+     */
+
+    addGifs: function() {
       this.$store
         .dispatch('addGifs', {
           endpoint: 'http://api.giphy.com/v1/gifs/trending',
           params: {
             api_key: 'EWtgxX9ydYJ4qOS1nbO9SxaPJi38L8HM',
-            limit: this.$store.state.gifs_limit,
-            offset: this.$store.state.gifs_offset + 1,
+            limit: this.$store.state.limit,
+            offset: this.$store.state.offset + 1,
           },
         })
         .then(() => {
-          this.$store.dispatch('setGifsLoaded')
+          this.$store.dispatch('loaded')
           this.busy = false
         })
     },
 
+    /**
+     * Update
+     *
+     * Check if viewport = bottom of the page on RAF
+     *
+     * @function
+     *
+     */
+
     update: function() {
       if (!this.$store.state.search) {
         if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-          this.$store.dispatch('setLoadingMoreGifs')
+          this.$store.dispatch('loadingMore')
 
-          if (this.busy || !this.$store.state.gifs_loaded) return
+          if (this.busy || !this.$store.state.loaded) return
           this.busy = true
 
           this.loadMore()
@@ -104,9 +124,18 @@ export default {
       }
     },
 
+    /**
+     * Load more
+     *
+     * Load more gifs with infinite scroll
+     *
+     * @function
+     *
+     */
+
     loadMore: function() {
-      this.$store.dispatch('setGifsOffset')
-      this.addTrendingGifs()
+      this.$store.dispatch('setOffset')
+      this.addGifs()
     },
   },
 }

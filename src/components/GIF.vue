@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    img(v-bind:src="gif.images.original.url")
+    img(v-bind:src="gif.images.original.url" v-bind:alt="gif.title")
     div(class="spinner gif-loader")
       div.bounce1
       div.bounce2
@@ -60,8 +60,6 @@ export default {
 
   .gif-loader {
     position: absolute;
-
-    // top: 0;
 
     margin: 0;
     padding: 0;

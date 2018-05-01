@@ -5,30 +5,30 @@ import Vuex from 'vuex'
 
 import {
   GET_GIFS,
-  SET_LOADING_GIFS,
-  SET_LOADED_GIFS,
-  SET_LOADING_MORE_GIFS,
-  SET_GIFS_OFFSET,
+  LOADING,
+  LOADED,
+  LOADING_MORE,
+  SET_OFFSET,
   ADD_GIFS,
-  SET_ERROR_ON_LOAD,
+  ERROR,
   TOGGLE_SEARCH_STATE,
-  SEARCH_STATE_TO_FALSE,
-  EMPTY_GIFS_ARRAY,
-  OFFSET_TO_ZERO,
-  REMOVE_ERROR,
+  RESET_SEARCH_STATE,
+  RESET,
+  RESET_OFFSET,
+  RESET_ERROR,
   SEARCH_RETURN_NULL,
-  REMOVE_SEARCH_RETURN_TO_NULL,
+  RESET_SEARCH_RETURN_TO_NULL,
 } from './Types'
 
 Vue.use(Vuex, VueAxios, axios)
 
 const state = {
   gifs: [],
-  gifs_limit: 24,
-  gifs_offset: 0,
-  gifs_loading: false,
-  gifs_loaded: false,
-  gifs_loading_failed: false,
+  limit: 24,
+  offset: 0,
+  loading: false,
+  loaded: false,
+  loading_failed: false,
   search: false,
   search_return_null: false,
 }
@@ -37,69 +37,226 @@ const getters = {}
 
 const mutations = {
   /* eslint-disable */
+
+  /**
+   * Get GIFs
+   *
+   * Get GIFs on container mount.
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   * @param {payload} object
+   *   Data get by HTTP request
+   */
+
   [GET_GIFS]: (state, payload) => {
     state.gifs = payload.data.data
   },
+
+  /**
+   * Add GIFs
+   *
+   * Add GIFs to component for load more functions.
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   * @param {payload} object
+   *   Data get by HTTP request
+   */
 
   [ADD_GIFS]: (state, payload) => {
     state.gifs = [...state.gifs, ...payload.data.data]
   },
 
-  [SET_GIFS_OFFSET]: (state) => {
-    state.gifs_offset += state.gifs_limit
+  /**
+   * Set Offset
+   *
+   * Set offset number use as params for HTTP request.
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [SET_OFFSET]: (state) => {
+    state.offset += state.limit
   },
 
-  [SET_LOADING_GIFS]: (state) => {
-    state.gifs_loading = true
-    state.gifs_loaded = false
+  /**
+   * Loading
+   *
+   * Set loading state to manipulate DOM.
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [LOADING]: (state) => {
+    state.loading = true
+    state.loaded = false
   },
 
-  [SET_LOADING_MORE_GIFS]: (state) => {
-    state.gifs_loading = true
-    state.gifs_loaded = true
+  /**
+   * Loaded
+   *
+   * Set loaded state to manipulate DOM.
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [LOADED]: (state) => {
+    state.loading = false
+    state.loaded = true
   },
 
-  [SET_LOADED_GIFS]: (state) => {
-    state.gifs_loading = false
-    state.gifs_loaded = true
+  /**
+   * Loading more
+   *
+   * Set loading more state to manipulate DOM.
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [LOADING_MORE]: (state) => {
+    state.loading = true
+    state.loaded = true
   },
 
-  [EMPTY_GIFS_ARRAY]: (state) => {
+  /**
+   * Reset
+   *
+   * Reset GIFs array
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [RESET]: (state) => {
     state.gifs = []
   },
 
-  [SET_ERROR_ON_LOAD]: (state) => {
-    state.gifs_loading = false
-    state.gifs_loaded = false
-    state.gifs_loading_failed = true
+  /**
+   * Error
+   *
+   * Set error state
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [ERROR]: (state) => {
+    state.loading = false
+    state.loaded = false
+    state.loading_failed = true
   },
 
+  /**
+   * Search return null
+   *
+   * Set search_return_null state when HTTP request return an empty array
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
   [SEARCH_RETURN_NULL]: (state) => {
-    state.gifs_loading = false
-    state.gifs_loaded = false
-    state.gifs_loading_failed = true
+    state.loading = false
+    state.loaded = false
+    state.loading_failed = true
     state.search_return_null = true
   },
 
+  /**
+   * Toggle search state
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
   [TOGGLE_SEARCH_STATE]: (state) => {
-    state.search ? state.search = false : state.search = true
+    state.search ? (state.search = false) : (state.search = true)
   },
 
-  [SEARCH_STATE_TO_FALSE]: (state) => {
+  /**
+   * Reset search state
+   *
+   * Set search state to false
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [RESET_SEARCH_STATE]: (state) => {
     state.search = false
   },
 
-  [OFFSET_TO_ZERO]: (state) => {
-    state.gifs_offset = 0
+  /**
+   * Reset offset
+   *
+   * Set offset state to false
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [RESET_OFFSET]: (state) => {
+    state.offset = 0
   },
 
-  [REMOVE_ERROR]: (state) => {
-    state.gifs_loading_failed = false
+  /**
+   * Reset error
+   *
+   * Set error state to false
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [RESET_ERROR]: (state) => {
+    state.loading_failed = false
   },
 
-  [REMOVE_SEARCH_RETURN_TO_NULL]: (state) => {
+  /**
+   * Reset search return to null
+   *
+   * Set search_return_to_null state to false
+   *
+   * @function
+   *
+   * @param {state} object
+   *   States from store
+   */
+
+  [RESET_SEARCH_RETURN_TO_NULL]: (state) => {
     state.search_return_null = false
-  }
+  },
   /* eslint-enable */
 }
 
@@ -122,7 +279,7 @@ const actions = {
           resolve()
         })
         .catch(() => {
-          context.commit('SET_ERROR_ON_LOAD')
+          context.commit('ERROR')
         })
     })
   },
@@ -145,49 +302,49 @@ const actions = {
           resolve()
         })
         .catch(() => {
-          context.commit('SET_ERROR_ON_LOAD')
+          context.commit('ERROR')
         })
     })
   },
 
-  setGifsLoading: (context) => {
-    context.commit('SET_LOADING_GIFS')
+  loading: (context) => {
+    context.commit('LOADING')
   },
 
-  setLoadingMoreGifs: (context) => {
-    context.commit('SET_LOADING_MORE_GIFS')
+  loadingMore: (context) => {
+    context.commit('LOADING_MORE')
   },
 
-  setGifsLoaded: (context) => {
-    context.commit('SET_LOADED_GIFS')
+  loaded: (context) => {
+    context.commit('LOADED')
   },
 
-  setGifsOffset: (context) => {
-    context.commit('SET_GIFS_OFFSET')
+  setOffset: (context) => {
+    context.commit('SET_OFFSET')
   },
 
   search: (context) => {
     context.commit('TOGGLE_SEARCH_STATE')
   },
 
-  searchToFalse: (context) => {
-    context.commit('SEARCH_STATE_TO_FALSE')
+  resetSearchState: (context) => {
+    context.commit('RESET_SEARCH_STATE')
   },
 
-  emptyGifsArray: (context) => {
-    context.commit('EMPTY_GIFS_ARRAY')
+  resetGifs: (context) => {
+    context.commit('RESET')
   },
 
-  setOffsetToZero: (context) => {
-    context.commit('OFFSET_TO_ZERO')
+  resetOffset: (context) => {
+    context.commit('RESET_OFFSET')
   },
 
-  removeError: (context) => {
-    context.commit('REMOVE_ERROR')
+  resetError: (context) => {
+    context.commit('RESET_ERROR')
   },
 
-  removeSearchReturnNullState: (context) => {
-    context.commit('REMOVE_SEARCH_RETURN_TO_NULL')
+  resetSearchReturnNullState: (context) => {
+    context.commit('RESET_SEARCH_RETURN_TO_NULL')
   },
 }
 

@@ -1,6 +1,16 @@
 # Trending GIFs
 
-> A Vue.js project
+Discover the top trending GIFs !
+
+## Stacks
+
+- [Vue.js](https://vuejs.org/)
+- [VueX](https://vuex.vuejs.org/fr/)
+- [vue-cli](https://github.com/vuejs/vue-cli)
+- [Prettier](https://prettier.io/)
+
+Templating : [PUG](https://pugjs.org/api/getting-started.html)
+Styling : [SCSS](https://sass-lang.com/)
 
 ## Build Setup
 

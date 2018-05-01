@@ -14,10 +14,18 @@ export default {
   },
 
   beforeDestroy: function() {
-    this.$store.dispatch('searchToFalse')
+    this.$store.dispatch('resetSearchState')
   },
 
   methods: {
+    /**
+     * Submit
+     *
+     * Submit form on enter
+     *
+     * @function
+     *
+     */
     submit: function() {
       if (this.search_text && this.search_text.length > 0) {
         this.$router.push({ path: `/search/${this.search_text.replace(' ', '-')}` })
